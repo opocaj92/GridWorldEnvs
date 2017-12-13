@@ -7,7 +7,7 @@ GridWorld is a simple and famous benchmark problem in Reinforcement Learning. Th
 Also multi-agent versions have been proposed, like the Pursers-Evaders problem, in which a set of pursuers (our agents) have to reach coordinately the location of the pursuers in order to catch them, while also the evaders are moving in the environment (in out environment they move at random, but they could also learn how to evade). The problem ends when all the evaders have been catched.
 
 ### Overview
-This little environment for OpenAI Gym allows to learn these problems. The files *gym_gridworld/envs/GridWorld.py* and *gym_gridworld/envs/PursuersEvaders.py* represent the two different problems respectively. They can simply be used as any other OpenAI Gym environment with `env = gym.make("GridWorld-v0")` and `env = gym.make("PursuersEvaders-v0")`. Custom maps can be made using text file similar to the provided examples (files named *map#.txt* are for the GridWorld environment, while files named *mmap#.txt* are for the PursuersEvaders one).
+This little environment for OpenAI Gym allows to learn these problems. The files ***gym_gridworld/envs/GridWorld.py*** and ***gym_gridworld/envs/PursuersEvaders.py*** represent the two different problems respectively. They can simply be used as any other OpenAI Gym environment with `env = gym.make("GridWorld-v0")` and `env = gym.make("PursuersEvaders-v0")`. Custom maps can be made using text file similar to the provided examples (files named ***map#.txt*** are for the GridWorld environment, while files named ***mmap#.txt*** are for the PursuersEvaders one).
 
 The two files ***q_learning.py*** and ***multiagent_q_learning.py*** are two example solvers for these two environments using the Q-Learning algorithm.
 
