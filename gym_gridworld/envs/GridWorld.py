@@ -14,16 +14,15 @@ LEFT = 3
 class GridWorld(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, file_name = "map1.txt", fail_rate = 0.0, terminal_reward = 1.0,
-                 move_reward = 0.0, bump_reward = -0.5, bomb_reward = -1.0):
+    def __init__(self, file_name = "map1.txt", fail_rate = 0.0, terminal_reward = 1.0, move_reward = 0.0, bump_reward = -0.5, bomb_reward = -1.0):
         self.n = None
         self.m = None
         self.bombs = []
         self.walls = []
         self.goals = []
         self.start = None
-	this_file_path = os.path.dirname(os.path.realpath(__file__))
-	file_name = os.path.join(this_file_path, file_name) 
+        this_file_path = os.path.dirname(os.path.realpath(__file__))
+        file_name = os.path.join(this_file_path, file_name) 
         with open(file_name, "r") as f:
             for i, row in enumerate(f):
                 row = row.rstrip('\r\n')
@@ -84,7 +83,7 @@ class GridWorld(gym.Env):
         grid[self.state] = np.array([0, 0, 255])
         grid = grid.reshape(self.m, self.n, 3)
         img = Image.fromarray(grid, "RGB")
-	img = img.resize((self.m * 25, self.n * 25))
+        img = img.resize((self.m * 25, self.n * 25))
         img.show()        
 
     def _take_action(self, action):

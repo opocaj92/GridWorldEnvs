@@ -16,16 +16,15 @@ LEFT = 4
 class PursuersEvaders(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, file_name = "mmap1.txt", catch_level = 2, terminal_reward = 10.0,
-                 ontarget_reward = 1.0, move_reward = 0.0, bump_reward = -0.2):
+    def __init__(self, file_name = "mmap1.txt", catch_level = 2, terminal_reward = 10.0, ontarget_reward = 1.0, move_reward = 0.0, bump_reward = -0.2):
         self.n = None
         self.m = None
         self.catch_level = catch_level
         self.walls = []
         self.init_evaders = []
         self.init_pursuers = []
-	this_file_path = os.path.dirname(os.path.realpath(__file__))
-	file_name = os.path.join(this_file_path, file_name) 
+        this_file_path = os.path.dirname(os.path.realpath(__file__))
+        file_name = os.path.join(this_file_path, file_name) 
         with open(file_name, "r") as f:
             for i, row in enumerate(f):
                 row = row.rstrip('\r\n')
@@ -66,7 +65,7 @@ class PursuersEvaders(gym.Env):
             new_state = self._take_action(action)
             reward = self._get_reward(new_state, action)
             self.pursuers = new_state
-            #self._take_evaders_action
+            self._take_evaders_action()
             return self._build_observation(), reward, self.done, None
 
     def _reset(self):
@@ -87,7 +86,7 @@ class PursuersEvaders(gym.Env):
             grid[p] = np.array([0, 0, 255])
         grid = grid.reshape(self.m, self.n, 3)
         img = Image.fromarray(grid, "RGB")
-	img = img.resize((self.m * 25, self.n * 25))
+        img = img.resize((self.m * 25, self.n * 25))
         img.show()        
 
     def _take_action(self, action):

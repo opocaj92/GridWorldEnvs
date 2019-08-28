@@ -18,10 +18,8 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
     Q = defaultdict(lambda: np.zeros(env.n_actions))
     policy = make_epsilon_greedy_policy(Q, epsilon, env.n_actions)
     a_dict = {x: np.array([x / 5, x % 5]) for x in range(env.n_actions)}
-
     env.reset()
     env.render()
-    
     for i_episode in range(num_episodes):
         if (i_episode + 1) % 100 == 0:
             print("\rEpisode {}/{}.".format(i_episode + 1, num_episodes))
@@ -36,8 +34,7 @@ def q_learning(env, num_episodes, discount_factor=1.0, alpha=0.5, epsilon=0.1):
             if done:
                 break
             observation = next_observation
-    
     return Q
 
 Q = q_learning(env, 500)
-print Q
+print(Q)
