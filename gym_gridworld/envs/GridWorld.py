@@ -1,9 +1,9 @@
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
+from gym.envs.classic_control import rendering
 
 import numpy as np
-from PIL import Image
 import os
 
 UP = 0
@@ -15,6 +15,7 @@ class GridWorld(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, file_name = "map1.txt", fail_rate = 0.0, terminal_reward = 1.0, move_reward = 0.0, bump_reward = -0.5, bomb_reward = -1.0):
+        self.viewer = None
         self.n = None
         self.m = None
         self.bombs = []
@@ -72,19 +73,26 @@ class GridWorld(gym.Env):
 
     def _render(self, mode='human', close=False):
         if close:
+            if self.viewer is not None:
+                self.viewer.close()
+                self.viewer = None
             return
-        grid = np.multiply(np.ones((self.n_states, 3), dtype = np.int8), np.array([0, 255, 0], dtype = np.int8))
-        for g in self.goals:
-            grid[g] = np.array([255, 0, 0])
-        for b in self.bombs:
-            grid[b] = np.array([255, 255, 0])
-        for w in self.walls:
-            grid[w] = np.array([0, 0, 0])
-        grid[self.state] = np.array([0, 0, 255])
-        grid = grid.reshape(self.m, self.n, 3)
-        img = Image.fromarray(grid, "RGB")
-        img = img.resize((self.m * 25, self.n * 25))
-        img.show()        
+        if mode == 'human':
+            grid = np.multiply(np.ones((self.n_states, 3), dtype = np.int8), np.array([0, 255, 0], dtype = np.int8))
+            for g in self.goals:
+                grid[g] = np.array([255, 0, 0])
+            for b in self.bombs:
+                grid[b] = np.array([255, 255, 0])
+            for w in self.walls:
+                grid[w] = np.array([0, 0, 0])
+            grid[self.state] = np.array([0, 0, 255])
+            grid = grid.reshape(self.m, self.n, 3)
+            self.viewer.imshow(grid)
+            return self.viewer.isopen
+        elif mode == "rgb_array":
+            return grid
+        else:
+            return      
 
     def _take_action(self, action):
         row = self.state / self.n
