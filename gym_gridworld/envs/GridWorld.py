@@ -1,7 +1,7 @@
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
-from gym.envs.classic_control import rendering
+from gym.envs.classic_control.rendering import SimpleImageViewer
 
 import numpy as np
 import os
@@ -15,7 +15,7 @@ class GridWorld(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, file_name = "map1.txt", fail_rate = 0.0, terminal_reward = 1.0, move_reward = 0.0, bump_reward = -0.5, bomb_reward = -1.0):
-        self.viewer = None
+        self.viewer = SimpleImageViewer()
         self.n = None
         self.m = None
         self.bombs = []
@@ -56,22 +56,22 @@ class GridWorld(gym.Env):
         self.observation_space = spaces.Discrete(self.n_states)
         self.done = False
         
-    def _step(self, action):
+    def step(self, action):
         assert self.action_space.contains(action)
         if self.state in self.goals or np.random.rand() < self.fail_rate:
             return self.state, 0.0, self.done, None
         else:
-            new_state = self._take_action(action)
-            reward = self._get_reward(new_state)
+            new_state = self.take_action(action)
+            reward = self.get_reward(new_state)
             self.state = new_state
             return self.state, reward, self.done, None
 
-    def _reset(self):
+    def reset(self):
         self.done = False
         self.state = self.start
         return self.state
 
-    def _render(self, mode='human', close=False):
+    def render(self, mode='human', close=False):
         if close:
             if self.viewer is not None:
                 self.viewer.close()
@@ -94,7 +94,7 @@ class GridWorld(gym.Env):
         else:
             return      
 
-    def _take_action(self, action):
+    def take_action(self, action):
         row = self.state / self.n
         col = self.state % self.n
         if action == DOWN and (row + 1) * self.n + col not in self.walls:
@@ -108,7 +108,7 @@ class GridWorld(gym.Env):
         new_state = row * self.n + col
         return new_state
 
-    def _get_reward(self, new_state):
+    def get_reward(self, new_state):
         if new_state in self.goals:
             self.done = True
             return self.terminal_reward
