@@ -1,7 +1,7 @@
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
-from gym.envs.classic_control import rendering
+from gym.envs.classic_control.rendering import SimpleImageViewer
 
 import numpy as np
 import os
@@ -17,7 +17,7 @@ class PursuersEvaders(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, file_name = "mmap1.txt", catch_level = 2, terminal_reward = 10.0, ontarget_reward = 1.0, move_reward = 0.0, bump_reward = -0.2):
-        self.viewer = None
+        self.viewer = SimpleImageViewer()
         self.n = None
         self.m = None
         self.catch_level = catch_level
@@ -58,24 +58,24 @@ class PursuersEvaders(gym.Env):
         self.observation_space = spaces.Box(-1, 3, (3, 3))
         self.done = False
         
-    def _step(self, action):
+    def step(self, action):
         assert self.action_space.contains(action)
         if len(self.evaders) == 0:
-            return self._build_observation(), 0.0, self.done, None
+            return self.build_observation(), 0.0, self.done, None
         else:
-            new_state = self._take_action(action)
-            reward = self._get_reward(new_state, action)
+            new_state = self.take_action(action)
+            reward = self.get_reward(new_state, action)
             self.pursuers = new_state
-            self._take_evaders_action()
-            return self._build_observation(), reward, self.done, None
+            self.take_evaders_action()
+            return self.build_observation(), reward, self.done, None
 
-    def _reset(self):
+    def reset(self):
         self.done = False
         self.evaders = copy.copy(self.init_evaders)
         self.pursuers = copy.copy(self.init_pursuers)
-        return self._build_observation()
+        return self.build_observation()
 
-    def _render(self, mode='human', close=False):
+    def render(self, mode='human', close=False):
         if close:
             if self.viewer is not None:
                 self.viewer.close()
@@ -97,7 +97,7 @@ class PursuersEvaders(gym.Env):
         else:
             return
 
-    def _take_action(self, action):
+    def take_action(self, action):
         new_state = []
         for a, p in zip(action, self.pursuers):
             row = p / self.n
@@ -113,12 +113,12 @@ class PursuersEvaders(gym.Env):
             new_state.append(row * self.n + col)
         return new_state
 
-    def _take_evaders_action(self):
+    def take_evaders_action(self):
         new_goals = []
         for e in self.evaders:
             row = e / self.n
             col = e % self.n
-            a = np.random.randin(0, 5)
+            a = np.random.randn(0, 5)
             if a == DOWN and (row + 1) * self.n + col not in self.walls:
                 row = min(row + 1, self.m - 1)
             elif a == UP and (row - 1) * self.n + col not in self.walls:
@@ -130,7 +130,7 @@ class PursuersEvaders(gym.Env):
             new_goals.append(row * self.n + col)
         self.evaders = new_goals
 
-    def _get_reward(self, new_state, action):
+    def get_reward(self, new_state, action):
         reward = 0.0
         for i, p in enumerate(new_state):
             n = 1
@@ -150,7 +150,7 @@ class PursuersEvaders(gym.Env):
                 reward += self.move_reward
         return reward
 
-    def _build_observation(self):
+    def build_observation(self):
         observations = []
         for p in self.pursuers:
             row = p / self.n
