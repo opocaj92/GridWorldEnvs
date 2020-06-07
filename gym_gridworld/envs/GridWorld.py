@@ -95,7 +95,7 @@ class GridWorld(gym.Env):
             return      
 
     def take_action(self, action):
-        row = self.state / self.n
+        row = self.state // self.n
         col = self.state % self.n
         if action == DOWN and (row + 1) * self.n + col not in self.walls:
             row = min(row + 1, self.m - 1)
