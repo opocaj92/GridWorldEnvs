@@ -100,7 +100,7 @@ class PursuersEvaders(gym.Env):
     def take_action(self, action):
         new_state = []
         for a, p in zip(action, self.pursuers):
-            row = p / self.n
+            row = p // self.n
             col = p % self.n
             if a == DOWN and (row + 1) * self.n + col not in self.walls:
                 row = min(row + 1, self.m - 1)
@@ -116,7 +116,7 @@ class PursuersEvaders(gym.Env):
     def take_evaders_action(self):
         new_goals = []
         for e in self.evaders:
-            row = e / self.n
+            row = e // self.n
             col = e % self.n
             a = np.random.randn(0, 5)
             if a == DOWN and (row + 1) * self.n + col not in self.walls:
@@ -153,7 +153,7 @@ class PursuersEvaders(gym.Env):
     def build_observation(self):
         observations = []
         for p in self.pursuers:
-            row = p / self.n
+            row = p // self.n
             col = p % self.n
             o = np.zeros((3, 3), dtype = np.int8)
             for i in range(-1, 2):
